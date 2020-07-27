@@ -1,9 +1,8 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import axios from 'axios';
 
-
 export const useSearch = (query) => {
-    // const cancelToken = useRef(null);
+    const cancelToken = useRef(null);
     const [state, setState] = useState({
         search: {
             articles: []
@@ -13,21 +12,24 @@ export const useSearch = (query) => {
     });
 
     useEffect(() => {
-        // if (cancelToken.current) {
-        //     cancelToken.current.cancel();
-        // }
+        if (cancelToken.current) {
+            console.log('!!Cancel');
+            cancelToken.current.cancel('message');
+        }
 
         if (!query || query.length < 3) {
             setState((state) => ({ ...state, search: { articles: [] } }));
             return;
         }
 
-        // cancelToken.current = axiosInstance.CancelToken.source();
+        cancelToken.current = axios.CancelToken.source();
 
         setState((state) => ({ ...state, status: 'PENDING' }));
 
         // fetchApi(`${API_PREFIX}/search`, { params: { query } })
-        axios.get(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${query}&limit=5`)
+        axios.get(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${query}&limit=5`, {
+            cancelToken: cancelToken.current.token
+        })
             .then((res) => res.data)
             .then((data) => {
 
@@ -46,9 +48,10 @@ export const useSearch = (query) => {
                 });
             })
             .catch((error) => {
-                // if (axiosInstance.isCancel(error)) {
-                //     return;
-                // }
+                if (axios.isCancel(error)) {
+                    console.log('!!Cancel1');
+                    return;
+                }
 
                 setState({
                     search: {
@@ -60,10 +63,11 @@ export const useSearch = (query) => {
             });
 
         return () => {
-            // if (cancelToken.current) {
-            //     cancelToken.current.cancel();
-            //     cancelToken.current = null;
-            // }
+            if (cancelToken.current) {
+                console.log('!!Cancel2');
+                cancelToken.current.cancel();
+                cancelToken.current = null;
+            }
         };
     }, [ query ]);
 
