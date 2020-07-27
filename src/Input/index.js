@@ -1,46 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import Autocomplete from 'react-autocomplete';
+// import _ from 'lodash';
 
-import axios from 'axios';
-
-import {useSearch} from '../hooks';
+import {useSearch, useDebounce} from '../hooks';
 
 const Input = () => {
     const [value, setValue] = useState('');
-    // const [items, setItems] = useState([]);
 
     const onChange = (e) => setValue(e.target.value);
 
-    // useEffect(() => {
-
-        const {search: { articles = [] }} = useSearch(value);
-
-        // setItems(articles);
-        // if (!value) {
-        //     return;
-        // }
-        //
-        // axios.get(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${value}&limit=5`)
-        //     .then(function (response) {
-        //         // handle success
-        //         console.log(response);
-        //         const responseItems = [];
-        //         const {data} = response;
-        //
-        //         for(let i = 0; i < data[1].length; i++) {
-        //             responseItems.push({id: data[1][i], label: data[3][i]});
-        //         }
-        //
-        //         setItems(responseItems)
-        //     })
-        //     .catch(function (error) {
-        //         // handle error
-        //         console.log(error);
-        //         setItems([])
-        //     });
-    // }, [value]);
-
-
+    const {search: { articles = [] }} = useSearch(useDebounce(value, 500));
 
     return <Autocomplete
         items={articles}
