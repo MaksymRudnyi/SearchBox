@@ -1,5 +1,20 @@
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useState, useRef, useCallback} from 'react';
 import axios from 'axios';
+
+export const useSearchForm = (/*history*/) => {
+    const [searchValue, setSearchValue] = useState();
+
+    const onSearchChange = useCallback((ev) => {
+        setSearchValue(ev.target.value);
+    }, []);
+
+    // const onSearchSubmit = useCallback((ev) => {
+    //     ev.preventDefault();
+    //     history.push(`/search?query=${encodeURIComponent(searchValue)}`);
+    // }, [searchValue, history]);
+
+    return { searchValue, onSearchChange/*, onSearchSubmit */};
+};
 
 export const useSearch = (query) => {
     const cancelToken = useRef(null);

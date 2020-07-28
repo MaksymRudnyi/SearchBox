@@ -1,18 +1,16 @@
-import React, { useState} from 'react';
+import React from 'react';
 import Autocomplete from 'react-autocomplete';
 
 import InputField from "../components/Input";
 
-import {useSearch, useDebounce} from '../hooks';
+import {useSearch, useDebounce, useSearchForm} from '../hooks';
 
 import './styles.scss';
 
 const Input = () => {
-    const [value, setValue] = useState('');
+    const {searchValue, onSearchChange} = useSearchForm();
 
-    const onChange = (e) => setValue(e.target.value);
-
-    const {search: { articles = [] }} = useSearch(useDebounce(value, 500));
+    const {search: { articles = [] }} = useSearch(useDebounce(searchValue, 500));
 
     return <Autocomplete
         items={articles}
@@ -41,9 +39,9 @@ const Input = () => {
                 <a href={item.label} target="_blank">{item.id}</a>
             </div>
         }
-        value={value}
-        onChange={onChange}
-        onSelect={value => {debugger; setValue( value )}}
+        value={searchValue}
+        onChange={onSearchChange}
+        // onSelect={value => {debugger; setValue( value )}}
     />;
 };
 
