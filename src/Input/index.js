@@ -3,24 +3,18 @@ import Autocomplete from 'react-autocomplete';
 
 import InputField from "../components/Input";
 
-import {useSearch, useDebounce, useSearchForm} from '../hooks';
-
 import './styles.scss';
 
-const Input = () => {
-    const {searchValue, onSearchChange} = useSearchForm();
-
-    const {search: { articles = [] }} = useSearch(useDebounce(searchValue, 500));
-
-    return <Autocomplete
-        items={articles}
+const Input = ({value, onChange, items}) => (
+    <Autocomplete
+        items={items}
         renderInput={InputField}
         inputProps={{ placeholder: 'Put any search term!'}}
         // shouldItemRender={(item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) > -1}
         getItemValue={item => item.label}
 
         renderMenu={(children, value, style) => (
-            articles && articles.length ? (
+            items && items.length ? (
                 <div style={{ ...style, top: 'auto', bottom: 0, left: 0 }}
                      className="autocomplete-menu">
                     {children}
@@ -39,10 +33,10 @@ const Input = () => {
                 <a href={item.label} target="_blank">{item.id}</a>
             </div>
         }
-        value={searchValue}
-        onChange={onSearchChange}
+        value={value}
+        onChange={onChange}
         // onSelect={value => {debugger; setValue( value )}}
-    />;
-};
+    />
+);
 
 export default Input;

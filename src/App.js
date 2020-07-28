@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Input from './Input';
+import Search from './components/Search';
 
 function App() {
   return (
-    <Input/>
+    <Search/>
   );
 }
 
