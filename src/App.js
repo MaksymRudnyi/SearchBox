@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Home from './components/Home';
+import Home from './pages/Home';
+import AllResults from "./pages/AllResults";
 
 function App() {
   return (
       <Router>
         <Switch>
           <Route exact path={'/'} component={Home}/>
-          <Route render={() => <div>hello</div>}/>
+          <Route path={'/search'} component={AllResults}/>
         </Switch>
       </Router>
   );
