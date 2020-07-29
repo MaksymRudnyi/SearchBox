@@ -16,7 +16,7 @@ export const useSearchForm = (/*history*/) => {
     return { searchValue, onSearchChange/*, onSearchSubmit */};
 };
 
-export const useSearch = (query) => {
+export const useSearch = (query, limit = 5) => {
     const cancelToken = useRef(null);
     const [state, setState] = useState({
         search: {
@@ -28,7 +28,6 @@ export const useSearch = (query) => {
 
     useEffect(() => {
         if (cancelToken.current) {
-            console.log('!!Cancel');
             cancelToken.current.cancel('message');
         }
 
@@ -41,8 +40,7 @@ export const useSearch = (query) => {
 
         setState((state) => ({ ...state, status: 'PENDING' }));
 
-        // fetchApi(`${API_PREFIX}/search`, { params: { query } })
-        axios.get(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${query}&limit=5`, {
+        axios.get(`https://en.wikipedia.org/w/api.php?&origin=*&action=opensearch&search=${query}&limit=${limit}`, {
             cancelToken: cancelToken.current.token
         })
             .then((res) => res.data)
@@ -64,7 +62,6 @@ export const useSearch = (query) => {
             })
             .catch((error) => {
                 if (axios.isCancel(error)) {
-                    console.log('!!Cancel1');
                     return;
                 }
 
@@ -79,7 +76,6 @@ export const useSearch = (query) => {
 
         return () => {
             if (cancelToken.current) {
-                console.log('!!Cancel2');
                 cancelToken.current.cancel();
                 cancelToken.current = null;
             }
